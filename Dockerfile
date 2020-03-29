@@ -2,7 +2,8 @@ FROM golang:alpine AS builder
 
 RUN apk add --no-cache git musl-dev curl upx 
 RUN go get -ldflags='-s -w' github.com/genuinetools/amicontained \
- && go get -ldflags='-s -w' github.com/genuinetools/reg 
+ && go get -ldflags='-s -w' github.com/genuinetools/reg \
+ && go get -ldflags='-s -w' github.com/etcd-io/etcd/etcdctl 
 
 RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) \
  && curl -sL "https://storage.googleapis.com/kubernetes-release/release/$VER/bin/linux/amd64/kubectl" -o kubectl \
@@ -13,6 +14,7 @@ RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/li
 
 RUN upx -f -o /amicontained /go/bin/amicontained \
  && upx -f -o /reg /go/bin/reg \
+ && upx -f -o /etcdctl /go/bin/etcdctl \
  && upx -f -o /kubectl /go/kubectl \
  && upx -f -o /oc /go/oc
 
@@ -20,6 +22,7 @@ FROM alpine:latest
 
 COPY --from=builder /amicontained /usr/bin/amicontained
 COPY --from=builder /reg /usr/bin/reg
+COPY --from=builder /etcdctl /usr/bin/etcdctl
 COPY --from=builder /kubectl /usr/bin/kubectl
 COPY --from=builder /oc /usr/bin/oc
 
