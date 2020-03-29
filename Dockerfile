@@ -12,7 +12,7 @@ RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stab
 RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
  && chmod +x oc
 
-ENV UPX "-f --brute -qq"
+ENV UPX "--brute -qq"
 
 RUN upx -o /amicontained /go/bin/amicontained \
  && upx -o /reg /go/bin/reg \
