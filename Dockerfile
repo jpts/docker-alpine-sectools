@@ -12,11 +12,13 @@ RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stab
 RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
  && chmod +x oc
 
-RUN upx -f -o /amicontained /go/bin/amicontained \
- && upx -f -o /reg /go/bin/reg \
- && upx -f -o /etcdctl /go/bin/etcdctl \
- && upx -f -o /kubectl /go/kubectl \
- && upx -f -o /oc /go/oc
+ENV UPX "-f --brute -qq"
+
+RUN upx -o /amicontained /go/bin/amicontained \
+ && upx -o /reg /go/bin/reg \
+ && upx -o /etcdctl /go/bin/etcdctl \
+ && upx -o /kubectl /go/kubectl \
+ && upx -o /oc /go/oc
 
 FROM alpine:latest
 
