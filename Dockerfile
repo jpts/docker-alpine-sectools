@@ -12,7 +12,7 @@ RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stab
 RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
  && chmod +x oc
 
-ENV UPX "--brute -qq"
+ENV UPX "-9 -qq"
 
 RUN upx -o /amicontained /go/bin/amicontained \
  && upx -o /reg /go/bin/reg \
@@ -28,6 +28,6 @@ COPY --from=builder /etcdctl /usr/bin/etcdctl
 COPY --from=builder /kubectl /usr/bin/kubectl
 COPY --from=builder /oc /usr/bin/oc
 
-RUN apk add --no-cache jq curl bind-tools docker-cli skopeo openssh-client nmap nmap-ncat
+RUN apk add --no-cache jq curl bind-tools docker-cli skopeo openssh-client nmap nmap-ncat libc6-compat
 
 CMD ["ash"]
