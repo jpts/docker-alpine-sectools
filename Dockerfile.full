@@ -15,8 +15,8 @@ RUN VER=$(curl -s https://api.github.com/repos/istio/istio/releases/latest | jq 
  && curl -sL "https://github.com/istio/istio/releases/download/$VER/istioctl-$VER-linux.tar.gz" | tar xzf - \
  && chmod +x istioctl
 
-RUN VER=$(curl -s https://api.github.com/repos/linkerd/linkerd2/releases/latest | jq -r '.tag_name') \
- && curl -sL "https://github.com/linkerd/linkerd2/releases/download/$VER/linkerd2-cli-$VER-linux" -o linkerd \
+RUN URL=$(curl -s https://api.github.com/repos/linkerd/linkerd2/releases/latest | jq -r '.assets[].browser_download_url | select(endswith("x-amd64"))') \
+ && curl -sL "$URL" -o linkerd \
  && chmod +x linkerd
 
 RUN VER=$(curl -s https://api.github.com/repos/helm/helm/releases | jq '.[].tag_name | select(startswith("v2"))' | jq -sr '.|first') \
