@@ -31,7 +31,7 @@ RUN VER=$(curl -s https://api.github.com/repos/helm/helm/releases | jq '.[].tag_
 
 WORKDIR /bins
 
-ENV UPX "-9 -qq"
+ENV UPX "-1 -qq"
 
 RUN upx -o etcdctl /go/bin/etcdctl \
  && upx -o grpcurl /go/bin/grpcurl \
@@ -49,6 +49,7 @@ COPY --from=builder /bins/* /usr/bin/
 
 RUN apk add --no-cache vim openssh \
  && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
+ && sed -i s/#AllowTcpForwarding.*/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config \
  && mkdir -p /var/run/sshd \
  && echo "root:OPaeyoo6aisha1Waiyoo" | chpasswd \
  && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
