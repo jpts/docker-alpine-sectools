@@ -1,7 +1,7 @@
 FROM golang:alpine AS builder
 
-RUN apk add --no-cache git musl-dev curl upx 
-RUN go get -ldflags='-s -w' github.com/genuinetools/amicontained \
+RUN apk add --no-cache git musl-dev curl upx gcc
+RUN go get -ldflags='-s -w' -race github.com/genuinetools/amicontained \
  && go get -ldflags='-s -w' github.com/genuinetools/reg
 
 RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) \
@@ -13,7 +13,7 @@ RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/li
 
 WORKDIR /bins
 
-ENV UPX "-9 -qq"
+ENV UPX "-1 -qq"
 
 RUN upx -o amicontained /go/bin/amicontained \
  && upx -o reg /go/bin/reg \
