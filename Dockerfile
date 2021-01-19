@@ -8,17 +8,13 @@ RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stab
  && curl -sL "https://storage.googleapis.com/kubernetes-release/release/$VER/bin/linux/amd64/kubectl" -o kubectl \
  && chmod +x kubectl
 
-RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
- && chmod +x oc
-
 WORKDIR /bins
 
 ENV UPX "-1 -qq"
 
 RUN upx -o amicontained /go/bin/amicontained \
  && upx -o reg /go/bin/reg \
- && upx -o kubectl /go/kubectl \
- && upx -o oc /go/oc
+ && upx -o kubectl /go/kubectl
 
 FROM alpine:latest
 
@@ -26,9 +22,10 @@ RUN mkdir /tools
 COPY --from=builder /bins/* /usr/bin/
 
 RUN apk add --no-cache \
-    libc6-compat file iproute2 jq \
+    file iproute2 jq \
     curl bind-tools tcpdump socat \
     docker-cli skopeo \
     openssh-client openssl nmap nmap-ncat
 
+WORKDIR /root
 CMD ["ash"]

@@ -29,6 +29,9 @@ RUN VER=$(curl -s https://api.github.com/repos/helm/helm/releases | jq '.[].tag_
  && chmod +x helm \
  && mv helm helm3
 
+RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
+ && chmod +x oc
+
 WORKDIR /bins
 
 ENV UPX "-1 -qq"
@@ -40,19 +43,13 @@ RUN upx -o etcdctl /go/bin/etcdctl \
  && upx -o istioctl /github/istioctl \
  && upx -o linkerd /github/linkerd \
  && upx -o helm2 /github/helm2 \
- && upx -o helm3 /github/helm3
-
+ && upx -o helm3 /github/helm3 \
+ && upx -o oc /github/oc
 
 FROM jpts/sectools
 
 COPY --from=builder /bins/* /usr/bin/
 
-RUN apk add --no-cache vim openssh \
- && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
- && sed -i s/#AllowTcpForwarding.*/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config \
- && mkdir -p /var/run/sshd \
- && echo "root:OPaeyoo6aisha1Waiyoo" | chpasswd \
- && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+RUN apk add --no-cache libc6-compat
 
-EXPOSE 3456
-CMD ["/usr/sbin/sshd", "-D", "-p", "3456", "-e"]
+CMD ["ash"]
