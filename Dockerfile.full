@@ -12,8 +12,8 @@ RUN VER=$(curl -s https://api.github.com/repos/projectcalico/calicoctl/releases/
  && curl -sL "https://github.com/projectcalico/calicoctl/releases/download/$VER/calicoctl-linux-amd64" -o calicoctl \
  && chmod +x calicoctl
 
-RUN VER=$(curl -s https://api.github.com/repos/istio/istio/releases/latest | jq -r '.tag_name') \
- && curl -sL "https://github.com/istio/istio/releases/download/$VER/istioctl-$VER-linux.tar.gz" | tar xzf - \
+RUN URL=$(curl -s https://api.github.com/repos/istio/istio/releases/latest | jq -r '.assets[].browser_download_url | select(test("ctl.*x-amd64.tar.gz$"))' \
+ && curl -sL "$URL" | tar xzf - \
  && chmod +x istioctl
 
 RUN URL=$(curl -s https://api.github.com/repos/linkerd/linkerd2/releases/latest | jq -r '.assets[].browser_download_url | select(endswith("x-amd64"))') \
