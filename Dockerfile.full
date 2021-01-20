@@ -1,9 +1,10 @@
 FROM golang:alpine as builder
 
 RUN apk add --no-cache git musl-dev curl upx jq
-RUN go get -ldflags='-s -w' github.com/etcd-io/etcd/etcdctl \
- && go get -ldflags='-s -w' github.com/fullstorydev/grpcurl/cmd/grpcurl \
+RUN go get -ldflags='-s -w' github.com/fullstorydev/grpcurl/cmd/grpcurl \
  && GO111MODULE=on go get -ldflags='-s -w' github.com/jpbetz/auger
+
+# go get -ldflags='-s -w' github.com/etcd-io/etcd/etcdctl \
 
 WORKDIR /github
 
@@ -32,6 +33,10 @@ RUN VER=$(curl -s https://api.github.com/repos/helm/helm/releases | jq '.[].tag_
 RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" | tar xzf - \
  && chmod +x oc
 
+RUN URL=$(curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest | jq -r '.assets[].browser_download_url | select(contains("linux-amd64"))') \
+ && curl -sL "$URL" | tar xzf - --strip-components=1 'etcd-*/etcdctl' \
+ && chmod +x etcdctl
+
 WORKDIR /bins
 
 ENV UPX "-1 -qq"
@@ -44,7 +49,8 @@ RUN upx -o etcdctl /go/bin/etcdctl \
  && upx -o linkerd /github/linkerd \
  && upx -o helm2 /github/helm2 \
  && upx -o helm3 /github/helm3 \
- && upx -o oc /github/oc
+ && upx -o oc /github/oc \
+ && upx -o etcdctl /github/etcdctl
 
 FROM jpts/sectools
 
