@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-RUN apk add --no-cache git musl-dev curl upx jq
+RUN apk add --no-cache git musl-dev curl upx jq tar
 RUN go get -ldflags='-s -w' github.com/fullstorydev/grpcurl/cmd/grpcurl \
  && GO111MODULE=on go get -ldflags='-s -w' github.com/jpbetz/auger
 
@@ -34,7 +34,7 @@ RUN curl -sL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/li
  && chmod +x oc
 
 RUN URL=$(curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest | jq -r '.assets[].browser_download_url | select(contains("linux-amd64"))') \
- && curl -sL "$URL" | tar xzf - --strip-components=1 'etcd-*/etcdctl' \
+ && curl -sL "$URL" | tar xzf - --strip-components=1 --no-same-owner --wildcards 'etcd-*/etcdctl' \
  && chmod +x etcdctl
 
 WORKDIR /bins
