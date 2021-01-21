@@ -41,7 +41,7 @@ WORKDIR /bins
 
 ENV UPX "-1 -qq"
 
-RUN upx -o etcdctl /go/bin/etcdctl \
+RUN upx -o etcdctl /github/etcdctl \
  && upx -o grpcurl /go/bin/grpcurl \
  && upx -o auger /go/bin/auger \
  && upx -o calicoctl /github/calicoctl \
@@ -49,10 +49,9 @@ RUN upx -o etcdctl /go/bin/etcdctl \
  && upx -o linkerd /github/linkerd \
  && upx -o helm2 /github/helm2 \
  && upx -o helm3 /github/helm3 \
- && upx -o oc /github/oc \
- && upx -o etcdctl /github/etcdctl
+ && upx -o oc /github/oc
 
-FROM jpts/sectools
+FROM docker.io/jpts/sectools
 
 COPY --from=builder /bins/* /usr/bin/
 
