@@ -4,7 +4,7 @@ RUN apk add --no-cache git musl-dev curl upx gcc
 RUN go get -ldflags='-s -w' -race github.com/genuinetools/amicontained \
  && go get -ldflags='-s -w' github.com/genuinetools/reg
 
-RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt) \
+RUN VER=$(curl -s https://storage.googleapis.com/kubernetes-release/release/latest.txt) \
  && curl -sL "https://storage.googleapis.com/kubernetes-release/release/$VER/bin/linux/amd64/kubectl" -o kubectl \
  && chmod +x kubectl
 
