@@ -1,4 +1,4 @@
-FROM jpts/sectools:full
+FROM jpts/sectools
 
 RUN apk add --no-cache vim openssh \
  && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
