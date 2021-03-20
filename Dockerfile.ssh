@@ -1,5 +1,6 @@
-FROM jpts/sectools
+FROM docker.io/jpts/sectools:latest
 
+# We use a hardcoded password here, as we may not be able to access one generated at runtime
 RUN apk add --no-cache vim openssh \
  && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
  && sed -i s/#AllowTcpForwarding.*/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config \

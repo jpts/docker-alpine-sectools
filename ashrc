@@ -1,0 +1,2 @@
+alias nc=ncat
+alias ll='ls -ahl'
