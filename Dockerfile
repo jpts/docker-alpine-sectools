@@ -51,7 +51,7 @@ RUN upx -o etcdctl /github/etcdctl \
  && upx -o helm3 /github/helm3 \
  && upx -o oc /github/oc
 
-FROM docker.io/jpts/sectools
+FROM docker.io/jpts/sectools:slim
 
 COPY --from=builder /bins/* /usr/bin/
 
